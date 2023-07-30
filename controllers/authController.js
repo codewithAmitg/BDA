@@ -56,7 +56,7 @@ const loginController = async (req, res) => {
       });
     }
     //User Token
-    const token = jwt.sign({ userID: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     return res.status(200).send({
@@ -75,4 +75,22 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController };
+//Get Current USER
+const currentUserController = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.body.userId });
+    return res.status(200).send({
+      success: true,
+      message: "User Fetched Successfully",
+      user,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "unable to get current user",
+      error,
+    });
+  }
+};
+
+module.exports = { registerController, loginController, currentUserController };
